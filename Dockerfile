@@ -4,5 +4,6 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 ENV Port 8000
+EXPOSE 8000
 
 CMD cd src/newssearchbrief && uvicorn main:app --port 8000 --host 0.0.0.0
