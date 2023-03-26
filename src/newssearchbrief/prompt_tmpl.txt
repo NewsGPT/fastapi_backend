@@ -1,0 +1,13 @@
+You are playing a role of news editor, summarize bellow 10 news articles into semantic clusters with below requirements:
+
+==Requrirements:
+# Each cluster is distincive and can be summarized from serveral input news articles.
+# Gurantee the output cluster number should be among 3-6;
+# The output format of each cluster, in the 1st line display the a summarized title , less than 7 words;  in the 2nd line using at most 3 bullets  cover the key points from the clustered news items, each bullet with length less than 8 words; the 3rd line to display the referred news item index, which should starts with "Reference:"
+# Sort the cluster by refreenced news items number, the biggest cluster, should ranked top.
+
+==Input {news_count} News article
+{list_of_news}
+
+== Output Clusters:
+1. 
