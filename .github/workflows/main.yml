@@ -1,0 +1,53 @@
+name: build docker and deploy to azure container instance
+
+on:
+  push:
+    branches:
+    - main
+
+env:
+  DockerImageName: news_search_brief
+  AzureInstanceName: news-search-brief
+  
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # checkout the repo
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v3
+        
+      - name: Log into registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ${{ secrets.ACR_ENDPOINT }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+     
+      - name: Build & Push ACR
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          build-args: |
+            version=${{ github.sha }}
+          tags: ${{ secrets.ACR_ENDPOINT }}/${{ env.DockerImageName }}:${{ github.sha }}
+          
+      - name: Login via Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+      
+      - name: 'Deploy to Azure Container Instances'
+        uses: 'azure/aci-deploy@v1'
+        with:
+          resource-group: NewsGPT
+          image: ${{ secrets.ACR_ENDPOINT }}/${{ env.DockerImageName }}:${{ github.sha }}
+          dns-name-label: ${{ env.AzureInstanceName }}
+          cpu: 1   #Optional
+          memory: 0.5   #Optional
+          restart-policy: OnFailure
+          registry-username: ${{ secrets.ACR_USERNAME }}
+          registry-password: ${{ secrets.ACR_PASSWORD }}
+          name: news-search-brief
+          secure-environment-variables: NEWSAPI_KEY=${{ secrets.NEWSAPI_KEY }} OPENAI_ORG=${{ secrets.OPENAI_ORG }} OPENAI_APIKEY=${{ secrets.OPENAI_APIKEY }} NEWSAPI_URL=${{ vars.NEWSAPI_URL}} 
+          location: 'west us 2'
