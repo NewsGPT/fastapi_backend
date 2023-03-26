@@ -20,7 +20,7 @@ jobs:
       - name: Log into registry
         uses: docker/login-action@v2.1.0
         with:
-          registry: ${{ secrets.ACR_ENDPOINT }}
+          registry: ${{ vars.ACR_ENDPOINT }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
      
@@ -30,7 +30,7 @@ jobs:
           push: true
           build-args: |
             version=${{ github.sha }}
-          tags: ${{ secrets.ACR_ENDPOINT }}/${{ env.DockerImageName }}:${{ github.sha }}
+          tags: ${{ vars.ACR_ENDPOINT }}/${{ env.DockerImageName }}:${{ github.sha }}
           
       - name: Login via Azure CLI
         uses: azure/login@v1
@@ -41,13 +41,12 @@ jobs:
         uses: 'azure/aci-deploy@v1'
         with:
           resource-group: NewsGPT
-          image: ${{ secrets.ACR_ENDPOINT }}/${{ env.DockerImageName }}:${{ github.sha }}
+          image: ${{ vars.ACR_ENDPOINT }}/${{ env.DockerImageName }}:${{ github.sha }}
           dns-name-label: ${{ env.AzureInstanceName }}
           cpu: 1   #Optional
           memory: 0.5   #Optional
-          restart-policy: OnFailure
           registry-username: ${{ secrets.ACR_USERNAME }}
           registry-password: ${{ secrets.ACR_PASSWORD }}
           name: news-search-brief
-          secure-environment-variables: NEWSAPI_KEY=${{ secrets.NEWSAPI_KEY }} OPENAI_ORG=${{ secrets.OPENAI_ORG }} OPENAI_APIKEY=${{ secrets.OPENAI_APIKEY }} NEWSAPI_URL=${{ vars.NEWSAPI_URL}} 
+          secure-environment-variables: NEWSAPI_KEY=${{ secrets.NEWSAPI_KEY }} OPENAI_ORG=${{ secrets.OPENAI_ORG }} OPENAI_APIKEY=${{ secrets.OPENAI_APIKEY }} NEWSAPI_URL=${{ vars.NEWSAPI_URL }} 
           location: 'west us 2'
