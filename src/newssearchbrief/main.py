@@ -1,10 +1,27 @@
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
+
 from typing import Annotated
 from utils import NewsSearchHelper, GPTBriefStaticHelper
+
 import settings
 
 app = FastAPI()
 # initilize the app with environments
+
+# Define allowed origins
+origins = [
+    '*'
+]
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def init_app(app: FastAPI) -> None:
     import os
