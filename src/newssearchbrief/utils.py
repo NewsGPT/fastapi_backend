@@ -29,7 +29,7 @@ class NewsSearchHelper:
             url = i.get("url", None)
             title = i.get("name", None)
             description = i.get("description", None)
-            dataPublished = i.get("datePublished", None)
+            datePublished = i.get("datePublished", None)
             thumbnail = None
 
             if i.get("image", None):
@@ -42,7 +42,7 @@ class NewsSearchHelper:
             r = NewsSearchResult(url = url,
                                  title = title,
                                  description=description,
-                                 dataPublished=dataPublished,
+                                 datePublished=datePublished,
                                  thumbnail=thumbnail
             )
             res.append(r)
