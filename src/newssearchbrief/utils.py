@@ -13,7 +13,7 @@ class NewsSearchHelper:
         self.api_key =  api_key
     
     def search(self, query, mkt="en-us", count=10) -> List[NewsSearchResult]:
-        params = "count={}&mkt={}&q={}".format(10, mkt, query)
+        params = "count={}&mkt={}&q={}".format(count, mkt, query)
         headers = {
             "Ocp-Apim-Subscription-Key": self.api_key
         }
